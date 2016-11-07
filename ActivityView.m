@@ -3,6 +3,7 @@
 #import "RCTBridge.h"
 #import "RCTUIManager.h"
 #import "RCTImageLoader.h"
+#import "RCTUtils.h"
 
 @implementation ActivityView
 
@@ -48,7 +49,7 @@ RCT_EXPORT_MODULE()
     return excludedActivities;
 }
 
-RCT_EXPORT_METHOD(show:(NSDictionary *)args)
+RCT_EXPORT_METHOD(show:(NSDictionary *)args callback:(RCTResponseSenderBlock)callback)
 {
     NSString *imageUrl = args[@"imageUrl"];
     NSString *image = args[@"image"];
@@ -71,7 +72,7 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
     }
 
     if (!imageUrl) {
-      return [self showWithOptions:args image:shareImage];
+        return [self showWithOptions:args image:shareImage callback:callback];
     }
 
     RCTImageLoader *loader = (RCTImageLoader*)[self.bridge moduleForClass:[RCTImageLoader class]];
@@ -93,12 +94,12 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
         }
 
         dispatch_async([weakSelf methodQueue], ^{
-            [weakSelf showWithOptions:args image:shareImage];
+            [weakSelf showWithOptions:args image:shareImage callback:callback];
         });
     }];
 }
 
-- (void) showWithOptions:(NSDictionary *)args image:(UIImage *)image
+- (void) showWithOptions:(NSDictionary *)args image:(UIImage *)image callback:(RCTResponseSenderBlock)callback
 {
     NSMutableArray *shareObject = [NSMutableArray array];
     NSString *text = args[@"text"];
@@ -156,6 +157,17 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
             activityView.popoverPresentationController.permittedArrowDirections = 0;
         }
     }
+
+    [activityView setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        NSDictionary *payload = @{
+          @"activityType": RCTNullIfNil(activityType),
+          @"completed": @(completed),
+          @"returnedItems": RCTNullIfNil(returnedItems)
+        };
+
+        callback(@[RCTJSErrorFromNSError(activityError), payload]);
+    }];
+
     [ctrl presentViewController:activityView animated:YES completion:nil];
 }
 
