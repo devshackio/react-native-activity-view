@@ -78,7 +78,7 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
 
     __weak ActivityView *weakSelf = self;
 
-    [loader loadImageWithTag:imageUrl callback:^(NSError *error, id imageOrData) {
+    [loader loadImageWithURLRequest:[RCTConvert NSURLRequest:imageUrl] callback:^(NSError *error, id imageOrData) {
         if (!error) {
           if ([imageOrData isKindOfClass:[NSData class]]) {
               shareImage = [UIImage imageWithData:imageOrData];
@@ -99,6 +99,7 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
 {
     NSMutableArray *shareObject = [NSMutableArray array];
     NSString *text = args[@"text"];
+    NSString *hashtag = args[@"hashtag"];
     NSURL *url = args[@"url"];
     NSObject *file = args[@"file"];
     NSArray *activitiesToExclude = args[@"exclude"];
@@ -111,6 +112,10 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args)
 
     if (text) {
         [shareObject addObject:text];
+    }
+
+    if (hashtag) {
+        [shareObject addObject:hashtag];
     }
 
     if (url) {

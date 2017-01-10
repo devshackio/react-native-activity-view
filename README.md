@@ -86,12 +86,13 @@ var YourComponent = React.createClass({
 Displays the Activity View with actions relevant to the `shareObject` passed.
 
 __Arguments__
-- `shareObject` - An _Object_ containing one or more of the following keys `text`, `url`, `anchor`, `exclude`, `imageUrl`, `imageBase64`, or `image`.
+- `shareObject` - An _Object_ containing one or more of the following keys `text`, `hashtag`, `url`, `anchor`, `exclude`, `imageUrl`, `imageBase64`, or `image`.
 
 __Examples__
 ```js
 ActivityView.show({
   text: 'ActivityView for React Native',
+  hashtag: '#MyTag',
   url: 'https://github.com/naoufal/react-native-activity-view',
   imageUrl: 'https://facebook.github.io/react/img/logo_og.png',
   exclude: ['postToFlickr', 'airDrop'],
