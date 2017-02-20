@@ -3,6 +3,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTImageLoader.h>
+#import <React/RCTUtils.h>
 
 @implementation ActivityView
 
