@@ -1,9 +1,8 @@
 #import "ActivityView.h"
-#import "RCTLog.h"
-#import "RCTBridge.h"
-#import "RCTUIManager.h"
-#import "RCTImageLoader.h"
-#import "RCTUtils.h"
+#import <React/RCTLog.h>
+#import <React/RCTBridge.h>
+#import <React/RCTUIManager.h>
+#import <React/RCTImageLoader.h>
 
 @implementation ActivityView
 
@@ -79,10 +78,7 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args callback:(RCTResponseSenderBlock)cal
 
     __weak ActivityView *weakSelf = self;
 
-    NSURL *url = [NSURL URLWithString:imageUrl];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-
-    [loader loadImageWithURLRequest:request callback:^(NSError *error, id imageOrData) {
+    [loader loadImageWithURLRequest:[RCTConvert NSURLRequest:imageUrl] callback:^(NSError *error, id imageOrData) {
         if (!error) {
           if ([imageOrData isKindOfClass:[NSData class]]) {
               shareImage = [UIImage imageWithData:imageOrData];
@@ -103,6 +99,7 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args callback:(RCTResponseSenderBlock)cal
 {
     NSMutableArray *shareObject = [NSMutableArray array];
     NSString *text = args[@"text"];
+    NSString *hashtag = args[@"hashtag"];
     NSURL *url = args[@"url"];
     NSObject *file = args[@"file"];
     NSArray *activitiesToExclude = args[@"exclude"];
@@ -115,6 +112,10 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)args callback:(RCTResponseSenderBlock)cal
 
     if (text) {
         [shareObject addObject:text];
+    }
+
+    if (hashtag) {
+        [shareObject addObject:hashtag];
     }
 
     if (url) {
